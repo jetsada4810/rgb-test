@@ -1,0 +1,53 @@
+#include <SoftwareSerial.h>
+
+/**
+ * RX = 10
+ * TX = 11
+ */
+SoftwareSerial esp8266con(10, 11); 
+
+
+void setup()  {
+
+  Serial.begin(9600);
+
+  esp8266con.begin(9600);
+  Serial.println("\n\n\nStart arduino from ArduinoNa.com");
+
+}
+
+ 
+
+void loop() {
+
+  /**
+   * เช็คว่าถ้ามีค่าเข้ามาจาก esp8266 ให้วนรับค่าทีละตัวอักษร 
+   * และส่งออก Serial monitor ทีละตัวอักษร จนครบทุกตัวอักษร
+   * และออกจาก loop
+   */
+  while (esp8266con.available() > 0) {
+    char inByte = esp8266con.read();
+    Serial.write(inByte);
+  }
+
+  /**
+   * เช็คว่าถ้ามีค่าเข้ามาจาก Serial monitor ให้วนรับค่าทีละตัวอักษร 
+   * และส่งออกไปยัง esp8266 ทีละตัวอักษร  
+   * และส่งออก Serial monitor ทีละตัวอักษร จนครบทุกตัวอักษร
+   * และออกจาก loop
+   */
+  while (Serial.available()) {
+
+    /**
+     * รับตัวอักษร 1 ตัว (1byte) 
+     */
+    char inChar = (char)Serial.read();
+
+    /**
+     * ส่งตัวอักษรนั้นออกไปที่ esp8266 
+     */
+    esp8266con.write(inChar);
+    Serial.write(inChar);
+  }
+
+}
